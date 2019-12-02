@@ -1,7 +1,18 @@
 from uuid import uuid4
+import boto3
+import requests
 from chalice import Chalice
+import envsettings
 
 app = Chalice(app_name='skytruth-api')
+
+BUCKET_NAME = 'skytruthdata'
+
+# Contains Oil_Slick_Database.csv
+BUCKET_CSV_PREFIX = 'Training_Sample/'
+
+# Put image objects inside this folder
+BUCKET_OUTPUT_PREFIX = 'Training_Images/'
 
 
 @app.route('/', methods=['GET'])
@@ -17,6 +28,20 @@ def candidates():
         "longitude": 115.1398,
         "id": uuid4()
     }
+
+
+@app.route('/reform-img-urls', methods=['GET'])
+def reform_img_urls():
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket(BUCKET_NAME)
+
+    for objs in bucket.objects.filter(Prefix=BUCKET_CSV_PREFIX):
+        print(objs)
+
+
+
+
+
 
 
 # The view function above will return {"hello": "world"}
