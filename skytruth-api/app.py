@@ -1,16 +1,22 @@
+from uuid import uuid4
 from chalice import Chalice
 
 app = Chalice(app_name='skytruth-api')
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return {'hello': 'world'}
 
 
-@app.route('/test')
-def index():
-    return  {"latitude": 36.1699, "longitude": 115.1398}
+# TODO: Returns a list of most likely lat/long objects
+@app.route('/candidates', methods=['GET'])
+def candidates():
+    return {
+        "latitude": 36.1699,
+        "longitude": 115.1398,
+        "id": uuid4()
+    }
 
 
 # The view function above will return {"hello": "world"}
