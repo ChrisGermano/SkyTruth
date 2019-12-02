@@ -104,3 +104,10 @@ dist
 .tern-port
 
 config.json
+
+# macOS
+.DS_Store
+
+# environment variables
+*.env
+.env
