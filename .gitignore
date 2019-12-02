@@ -115,3 +115,6 @@ config.json
 # JetBrains
 .idea*
 .idea/*
+
+# pycache
+**pycache**
