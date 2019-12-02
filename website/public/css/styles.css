@@ -1,0 +1,35 @@
+body {
+  background-color: #FFF;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
+.navbar {
+  background-color: #1FA3C2;
+  margin-bottom: 25px;
+}
+
+.dataCard {
+  background-color: #e5e5e5;
+  border: 2px solid #c2c2c2;
+  border-radius: 5px;
+  min-height: 500px;
+  margin: 15px;
+  padding: 25px;
+}
+
+#dataCard__snapshot {
+  border: 1px solid black;
+  display: none;
+  height: 200px;
+  width: 200px;
+}
+
+#dataCard__shipList {
+  font-size: 24px;
+}
