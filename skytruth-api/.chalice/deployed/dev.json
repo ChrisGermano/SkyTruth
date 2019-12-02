@@ -1,19 +1,23 @@
 {
   "resources": [
     {
+      "name": "default-role",
+      "resource_type": "iam_role",
+      "role_arn": "arn:aws:iam::186788296343:role/skytruth-api-dev",
+      "role_name": "skytruth-api-dev"
+    },
+    {
       "name": "api_handler",
       "resource_type": "lambda_function",
-      // TODO
       "lambda_arn": "arn:aws:lambda:us-east-1:186788296343:function:skytruth-api-dev"
     },
     {
       "name": "rest_api",
       "resource_type": "rest_api",
-      "rest_api_id": "TODO",
-      "rest_api_url": "https://<ApiId>.execute-api.us-east-1.amazonaws.com/dev/"
+      "rest_api_id": "dijl98r32i",
+      "rest_api_url": "https://dijl98r32i.execute-api.us-east-1.amazonaws.com/api/"
     }
   ],
-    "backend": "api"
- // TODO
-//  "schema_version": "1.x",
+  "schema_version": "2.0",
+  "backend": "api"
 }
