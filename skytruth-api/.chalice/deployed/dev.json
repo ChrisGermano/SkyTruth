@@ -1,0 +1,19 @@
+{
+  "resources": [
+    {
+      "name": "api_handler",
+      "resource_type": "lambda_function",
+      // TODO
+      "lambda_arn": "arn:aws:lambda:us-east-1:186788296343:function:skytruth-api-dev"
+    },
+    {
+      "name": "rest_api",
+      "resource_type": "rest_api",
+      "rest_api_id": "TODO",
+      "rest_api_url": "https://<ApiId>.execute-api.us-east-1.amazonaws.com/dev/"
+    }
+  ],
+    "backend": "api"
+ // TODO
+//  "schema_version": "1.x",
+}
