@@ -40,10 +40,10 @@ new_objects.contents.each do |new_object|
   #  p response
   #end
 
-  # Finding ship location here
-  # dynamoDB = Aws::DynamoDB::Resource.new(region: 'us-east-1')
-  # table = dynamoDB.table('AIS_Ship_Location')
-  # ship = table.query(...)
+  # Finding ship location here, but using random ship location for Demo
+  dynamoDB = Aws::DynamoDB::Resource.new(region: 'us-east-1')
+  table = dynamoDB.table('AIS_Ship_Location')
+  ship = table.scan[0].sample
   dynamoDB = Aws::DynamoDB::Resource.new(region: 'us-east-1')
   table = dynamoDB.table('candidate_ships')
 
@@ -55,8 +55,7 @@ new_objects.contents.each do |new_object|
         "image_url" => image_url,
         "image_coordinates" => latlons.map {|ll| { lat: ll.lat, lon: ll.lon } },
         "probability": probability,
-        "ship": {
-        },
+        "ship": ship,
       }
     }
   )
