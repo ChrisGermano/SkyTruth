@@ -1,6 +1,6 @@
 const width = window.innerWidth;
 const height = window.innerHeight;
-const config = {
+let config = {
   speed: 0.005,
   verticalTilt: -30,
   horizontalTilt: 0,
@@ -25,25 +25,59 @@ function consumeSpillData() {
   allSpillData =
   [
     {
-      "uniqueID": "BIG BAD OIL SPILL",
-      "latitude": 36.1699,
-      "longitude": 115.1398,
+      "uniqueID": "DefaultPosition",
+      "latitude": 0,
+      "longitude": 0,
       "satImg": "xyz",
       "shipList": [
         {
-          "id" : "BAD SHIP",
+          "callsign" : "WDI9376",
+          "name" : "LAURA B",
           "confidence": 0.99
         },
         {
-          "id" : "OK SHIP",
+          "callsign" : "PA2969",
+          "name" : "ELAY",
           "confidence": 0.45
         },
         {
-          "id" : "GOOD SHIP",
-          "confidence": 0.01
+          "callsign" : "WDC9569",
+          "name" : "LUKE",
+          "confidence": 0.12
         }
       ]
-    }
+    },
+    {
+      "uniqueID": "Hong Kong",
+      "latitude": 22.3193,
+      "longitude": 114.1694,
+      "satImg": "xyz",
+      "shipList": [
+        {
+          "callsign" : "CY7049",
+          "name" : "HECATE PRINCE",
+          "confidence": 0.12
+        }
+      ]
+    },
+    {
+      "uniqueID": "London",
+      "latitude": 51.5074,
+      "longitude": -0.1278,
+      "satImg": "xyz",
+      "shipList": [
+        {
+          "callsign" : "PH6484",
+          "name" : "VEERMAN VAN K",
+          "confidence": 0.12
+        },
+        {
+          "callsign" : "PI 6360",
+          "name" : "EVOLUTIE",
+          "confidence": 0.12
+        }
+      ]
+    },
   ]
 
 
@@ -103,8 +137,8 @@ function enableRotation() {
 }
 
 function clearDataCard() {
-  $('#dataCard__id').text("POI ID:");
-  $('#dataCard__latLong').text("POI LAT/LNG:");
+  $('#dataCard__id').text('');
+  $('#dataCard__latLong').text('');
   $('#dataCard__snapshot').hide();
   $('#dataCard__shipList').empty();
 }
@@ -116,19 +150,23 @@ $('#globe').on('mousemove', function(e) {
   $('.globePoint').each(function(p) {
     let cx = $(this).offset().left;
     let cy = $(this).offset().top;
-    if (Math.sqrt(Math.pow(e.pageX - cx,2) + (Math.pow(e.pageY - cy,2))) < 30) { //Should be 14ish but wiggle room
-      pauseTime = pauseTime === 0 ? d3.now() - config.timeDelta : pauseTime;
-      pause = true;
+
+    let hovering = Math.sqrt(Math.pow(e.pageX - cx,2) + (Math.pow(e.pageY - cy,2))) < 30;
+
+    if (hovering) {
 
       let pointData = locations.find(p => p.uniqueID === $(this).attr('id'));
 
+      pauseTime = pauseTime === 0 ? d3.now() - config.timeDelta : pauseTime;
+      pause = true;
+
       if (pointData != null) {
-        $('#dataCard__id').text("POI ID: " + pointData.uniqueID);
-        $('#dataCard__latLong').text("POI LAT/LNG: " + pointData.latitude + " " + pointData.longitude);
+        $('#dataCard__id').text("ID: " + pointData.uniqueID);
+        $('#dataCard__latLong').text("POI: " + pointData.latitude + "N " + pointData.longitude + "E");
         $('#dataCard__snapshot').attr('src',pointData.satImg).show();
         if ($('#dataCard__shipList').is(':empty')) {
           pointData.shipList.forEach(function(ship) {
-            $('#dataCard__shipList').append('<li>' + ship.id + ' - ' + ship.confidence + '</li>');
+            $('#dataCard__shipList').append('<li><b>' + ship.name + '</b><ul><li>Callsign: ' + ship.callsign + '</li><li>Confidence: ' + (ship.confidence * 100) + '%</li></ul></li>');
           })
         }
       }
@@ -136,8 +174,11 @@ $('#globe').on('mousemove', function(e) {
       pauseTime = 0;
       clearDataCard()
     }
+
   });
 })
+
+let lastPos = {};
 
 function drawMarkers() {
     const markers = markerGroup.selectAll('circle')
@@ -152,8 +193,17 @@ function drawMarkers() {
         .attr('id', d => { return d.uniqueID })
         .attr('fill', d => {
             const coordinate = [d.longitude, d.latitude];
+
+            let lastGD = lastPos[d.uniqueID];
             gdistance = d3.geoDistance(coordinate, projection.invert(center));
-            return gdistance > 1.57 ? 'none' : 'steelblue';
+
+            if (lastGD != null && parseFloat(lastGD)) {
+              lastPos[d.uniqueID] = gdistance;
+              return gdistance > lastGD ? 'none' : 'steelblue';
+            } else {
+              lastPos[d.uniqueID] = gdistance;
+              return 'red'; // Red implies a technical error
+            }
         })
         .attr('r', 7);
 
@@ -171,3 +221,7 @@ function downloadReport() {
   dlAnchorElem.setAttribute("download", "spillData.json");
   dlAnchorElem.click();
 }
+
+$('#tiltSlider').on('input', function(e) {
+  config.verticalTilt = $(this).val();
+})

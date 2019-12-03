@@ -1,3 +1,18 @@
+@font-face {
+  font-family: MontserratThin;
+  src: url('../fonts/Montserrat-Thin.ttf');
+}
+
+@font-face {
+  font-family: Montserrat;
+  src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+@font-face {
+  font-family: MontserratExtraBold;
+  src: url('../fonts/Montserrat-ExtraBold.ttf');
+}
+
 body {
   background-color: #FFF;
   margin: 0;
@@ -11,13 +26,30 @@ body {
 
 .navbar {
   background-color: #1FA3C2;
+  font-family: 'MontserratExtraBold', sans-serif;
+  font-weight: 800;
   margin-bottom: 25px;
+}
+
+.navbar .navbar-brand {
+  color: #222;
+}
+
+.navbar img {
+  max-height: 50px;
+}
+
+#tiltSlider {
+  left: calc(50% - 50px);
+  position: relative;
+  width: 150px;
 }
 
 .dataCard {
   background-color: #e5e5e5;
   border: 2px solid #c2c2c2;
   border-radius: 5px;
+  font-family: "Montserrat", sans-serif;
   min-height: 500px;
   margin: 15px;
   padding: 25px;
@@ -26,10 +58,16 @@ body {
 #dataCard__snapshot {
   border: 1px solid black;
   display: none;
-  height: 200px;
-  width: 200px;
+  height: 250px;
+  width: 250px;
 }
 
 #dataCard__shipList {
   font-size: 24px;
+  list-style: none;
+}
+
+#reportDownloader, #mapView {
+  font-family: "MontserratThin", sans-serif;
+  color: #000;
 }

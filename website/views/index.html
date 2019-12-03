@@ -7,20 +7,32 @@
   <body>
     <div class="container-fluid">
       <nav class="navbar navbar-light">
-        <span class="navbar-brand mb-0 h1">SkyTruth</span>
+        <span class="navbar-brand mb-0 h1">
+          <img src="https://skytruth.org/wp-content/uploads/2016/08/test_logo.png">
+          SkyTruth
+        </span>
       </nav>
 
       <div class="row">
         <div class="col-md-6 col-12">
+          <input type="range" min="-31" max="31" value="-30" class="slider" id="tiltSlider"/>
           <svg id="globe"></svg>
         </div>
         <div class="col-md-6 col-12">
           <div class="dataCard">
-            <a id="reportDownloader" href="javascript:void(0);" onclick="downloadReport()">Download full report as JSON</a>
-            <h3 id="dataCard__id">POI ID:</h3>
-            <p id="dataCard__latLong">POI LAT/LNG:</p>
-            <img src="" id="dataCard__snapshot">
-            <ul id="dataCard__shipList">
+            <div class="row">
+              <div class="col-12">
+                <a id="reportDownloader" href="javascript:void(0);" onclick="downloadReport()">Download full report as JSON</a>
+              </div>
+              <div class="col-6">
+                <h3 id="dataCard__id"></h3>
+                <p id="dataCard__latLong"></p>
+                <img src="" id="dataCard__snapshot">
+              </div>
+              <div class="col-6">
+                <ul id="dataCard__shipList">
+              </div>
+            </div>
             </ul>
           </div>
         </div>
