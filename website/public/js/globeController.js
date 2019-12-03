@@ -18,10 +18,50 @@ const center = [width/2, height/2];
 drawGlobe();
 drawGraticule();
 
+function consumeSpillData() {
+  let allSpillData = [];
+
+  // Stubbed
+  allSpillData =
+  [
+    {
+      "uniqueID": "BIG BAD OIL SPILL",
+      "latitude": 36.1699,
+      "longitude": 115.1398,
+      "satImg": "xyz",
+      "shipList": [
+        {
+          "id" : "BAD SHIP",
+          "confidence": 0.99
+        },
+        {
+          "id" : "OK SHIP",
+          "confidence": 0.45
+        },
+        {
+          "id" : "GOOD SHIP",
+          "confidence": 0.01
+        }
+      ]
+    }
+  ]
+
+
+  /*
+  $.get('API endpoint', function(data) {
+    // Assuming data is a JSON formatted as expected
+    data.forEach(function(spillData) {
+      allSpillData.push(spillData);
+    })
+  });
+  */
+  return allSpillData;
+}
+
 function drawGlobe() {
     d3.queue()
         .defer(d3.json, 'https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')
-        .defer(d3.json, 'locations.json')
+        //.defer(d3.json, consumeSpillData()) // TODO work with API when ready
         .await((error, worldData, locationData) => {
             svg.selectAll(".segment")
                 .data(topojson.feature(worldData, worldData.objects.countries).features)
@@ -32,7 +72,7 @@ function drawGlobe() {
                 .style("stroke-width", "2px")
                 .style("fill", (d, i) => '#e5e5e5')
                 .style("opacity", ".4");
-                locations = locationData;
+                locations = consumeSpillData();
                 drawMarkers();
         });
 }
@@ -62,15 +102,39 @@ function enableRotation() {
   });
 }
 
+function clearDataCard() {
+  $('#dataCard__id').text("POI ID:");
+  $('#dataCard__latLong').text("POI LAT/LNG:");
+  $('#dataCard__snapshot').hide();
+  $('#dataCard__shipList').empty();
+}
+
 $('#globe').on('mousemove', function(e) {
+
+  let pause = false;
+
   $('.globePoint').each(function(p) {
-    let cx = $(this).attr('cx');
-    let cy = $(this).attr('cy');
+    let cx = $(this).offset().left;
+    let cy = $(this).offset().top;
     if (Math.sqrt(Math.pow(e.pageX - cx,2) + (Math.pow(e.pageY - cy,2))) < 30) { //Should be 14ish but wiggle room
       pauseTime = pauseTime === 0 ? d3.now() - config.timeDelta : pauseTime;
-      console.log($(this).attr('id'));
-    } else {
+      pause = true;
+
+      let pointData = locations.find(p => p.uniqueID === $(this).attr('id'));
+
+      if (pointData != null) {
+        $('#dataCard__id').text("POI ID: " + pointData.uniqueID);
+        $('#dataCard__latLong').text("POI LAT/LNG: " + pointData.latitude + " " + pointData.longitude);
+        $('#dataCard__snapshot').attr('src',pointData.satImg).show();
+        if ($('#dataCard__shipList').is(':empty')) {
+          pointData.shipList.forEach(function(ship) {
+            $('#dataCard__shipList').append('<li>' + ship.id + ' - ' + ship.confidence + '</li>');
+          })
+        }
+      }
+    } else if (!pause) {
       pauseTime = 0;
+      clearDataCard()
     }
   });
 })
@@ -99,3 +163,11 @@ function drawMarkers() {
 }
 
 enableRotation();
+
+function downloadReport() {
+  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(locations));
+  var dlAnchorElem = document.getElementById('reportDownloader');
+  dlAnchorElem.setAttribute("href",dataStr);
+  dlAnchorElem.setAttribute("download", "spillData.json");
+  dlAnchorElem.click();
+}
